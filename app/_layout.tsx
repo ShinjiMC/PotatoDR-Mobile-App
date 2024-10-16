@@ -12,12 +12,14 @@ import { View, Text, Image, StyleSheet, Animated } from "react-native";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 
-SplashScreen.preventAutoHideAsync(); // Evita ocultar automáticamente el splash
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+    Verdana: require("../assets/fonts/verdana.ttf"),
+    Rows: require("../assets/fonts/Rows of Sunflowers.ttf"),
   });
 
   const [isAppReady, setAppReady] = useState(false);
@@ -25,7 +27,6 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (loaded) {
-      // Iniciar animación de fade in cuando las fuentes están listas
       Animated.timing(fadeAnim, {
         toValue: 1,
         duration: 2000,
@@ -33,8 +34,8 @@ export default function RootLayout() {
       }).start(() => {
         setTimeout(() => {
           setAppReady(true);
-          SplashScreen.hideAsync(); // Ocultar el splash screen de Expo
-        }, 3000); // Esperar 3 segundos más antes de ir a la Home
+          SplashScreen.hideAsync();
+        }, 3000);
       });
     }
   }, [loaded]);
@@ -42,12 +43,14 @@ export default function RootLayout() {
   if (!loaded || !isAppReady) {
     return (
       <View style={styles.container}>
-        <Animated.View style={{ opacity: fadeAnim }}>
+        <Animated.View style={[styles.centeredContent, { opacity: fadeAnim }]}>
           <Image
-            source={require("../assets/images/partial-react-logo.png")} // Cambia a tu logo
+            source={require("../assets/images/potatoDR-logo-clean.png")}
             style={styles.logo}
           />
-          <Text style={styles.appName}>Mi App</Text>
+          <Text style={[styles.appName, { fontFamily: "Rows" }]}>
+            DR Potato
+          </Text>
         </Animated.View>
       </View>
     );
@@ -55,7 +58,7 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack>
+      <Stack screenOptions={{ headerTitleStyle: { fontFamily: "Verdana" } }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
@@ -68,16 +71,25 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#fff", // Fondo blanco
+    backgroundColor: "#fff",
+  },
+  centeredContent: {
+    justifyContent: "center",
+    alignItems: "center",
   },
   logo: {
-    width: 150,
-    height: 150,
-    marginBottom: 20,
+    width: 300,
+    height: 300,
+    marginBottom: -20,
   },
   appName: {
-    fontSize: 28,
+    fontSize: 40,
     fontWeight: "bold",
     color: "#333",
+    fontFamily: "Rows",
+    textAlign: "center",
+  },
+  defaultText: {
+    fontFamily: "Verdana",
   },
 });
